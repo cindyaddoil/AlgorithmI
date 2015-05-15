@@ -1,3 +1,17 @@
+/**
+ * 
+ * @author chunfang li
+ * @written May 15, 2015
+ * 
+ *          Compilation javac Percolation.java
+ * 
+ *          Execution java Percolation
+ * 
+ *          We model a percolation system using an N-by-N grid of sites. Each
+ *          site is either open or blocked. The system percolates if top row
+ *          connects to bottom row
+ *
+ */
 public class Percolation {
 
 	private int top = 0;
@@ -8,6 +22,7 @@ public class Percolation {
 	private boolean grid[][];
 	private WeightedQuickUnionUF QU;
 
+	// create N-by-N grid, with all sites blocked
 	public Percolation(int N) {
 		if (N <= 0) {
 			throw new IllegalArgumentException("Wrong Parameter");
@@ -21,12 +36,14 @@ public class Percolation {
 		}
 		bottom = N * N + 1;
 		QU = new WeightedQuickUnionUF(N * N + 2);
-	} // create N-by-N grid, with all sites blocked
+	}
 
+	// Get index of N-by-N grid
 	private int getGridIndex(int i, int j) {
 		return (number * i + j + 1);
-	} // Get index of N-by-N grid
+	}
 
+	// open site (row i, column j) if it is not open already
 	public void open(int i, int j) {
 		if (!isOpen(i, j)) {
 			if (i > number || i < 1 || j > number || j < 1) {
@@ -47,42 +64,44 @@ public class Percolation {
 			if (j != number && grid[i - 1][j] == OPEN)
 				QU.union(getGridIndex(i - 1, j), getGridIndex(i - 1, j - 1));
 		}
-	} // open site (row i, column j) if it is not open already
+	}
 
+	// is site (row i, column j) open?
 	public boolean isOpen(int i, int j) {
 		if (i > number || i < 1 || j > number || j < 1) {
 			throw new IndexOutOfBoundsException("out of range");
 		}
 		return (grid[i - 1][j - 1] == OPEN);
-	} // is site (row i, column j) open?
+	}
 
+	// is site (row i, column j) full?
+	// A full site is an open site that can be connected to an open site
+	// in the top row via a chain of neighboring open sites
 	public boolean isFull(int i, int j) {
 		if (i >= number || i < 0 || j >= number || j < 0) {
 			throw new IndexOutOfBoundsException("out of range");
 		}
 		return isOpen(i, j) && QU.connected(top, getGridIndex(i, j));
-	} // is site (row i, column j) full?
-
-	public boolean percolates() {
-		return QU.connected(top, bottom);
-	} // does the system percolate?
-
-	public int getNumber() {
-		return number;
 	}
 
+	// is site (row i, column j) full?
+	public boolean percolates() {
+		return QU.connected(top, bottom);
+	}
+
+	// test client
 	public static void main(String[] args) {
-		Percolation P = new Percolation(5);
+		Percolation Perco = new Percolation(5);
 		int N = 5;
 		// for (int n = 0; n < P.getNumber(); n++){
-		P.open(1, 5);
+		Perco.open(1, 5);
 		// }
 		for (int m = 1; m <= N; m++) {
 			for (int n = 1; n <= N; n++) {
-				System.out.print(P.isOpen(m, n) + " ");
+				System.out.print(Perco.isOpen(m, n) + " ");
 			}
 			System.out.println();
 		}
-		System.out.println(P.percolates());
-	} // test client (optional)
+		System.out.println(Perco.percolates());
+	}
 }
