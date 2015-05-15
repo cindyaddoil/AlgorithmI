@@ -1,6 +1,6 @@
 /**
  * 
- * @author chunfang li
+ * @author cindy li
  * @written May 15, 2015
  * 
  *          Compilation javac Percolation.java
